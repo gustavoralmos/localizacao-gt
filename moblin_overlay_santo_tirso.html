@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moblin Live Overlay</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #fff; }
+  .widget {
+    display: inline-flex; flex-direction: column; gap: 10px;
+    min-width: 290px; padding: 15px 18px;
+    background: rgba(10, 15, 25, .86);
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 18px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.28);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .top { display:flex; align-items:center; justify-content:space-between; gap:18px; }
+  .live { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:1.5px; color:#fff; }
+  .dot { width:8px; height:8px; border-radius:50%; background:#ff4058; box-shadow:0 0 10px #ff4058; }
+  #clock { font-size:28px; line-height:1; font-weight:750; letter-spacing:.4px; font-variant-numeric:tabular-nums; }
+  .line { height:1px; background:rgba(255,255,255,.14); }
+  .bottom { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .place { display:flex; align-items:center; gap:10px; }
+  .pin { width:32px; height:32px; display:grid; place-items:center; border-radius:10px; background:rgba(67,145,255,.16); font-size:18px; }
+  .city { font-size:16px; font-weight:700; }
+  .country { margin-top:2px; color:#aeb9ca; font-size:11px; letter-spacing:.7px; }
+  .weather { text-align:right; font-size:22px; font-weight:700; white-space:nowrap; }
+  .weather small { display:block; color:#aeb9ca; font-size:10px; font-weight:600; letter-spacing:.7px; }
+  .weather-icon { font-size:20px; margin-right:5px; }
+</style>
+</head>
+<body>
+  <main class="widget">
+    <div class="top">
+      <div class="live"><span class="dot"></span> LIVE</div>
+      <div id="clock">--:--:--</div>
+    </div>
+    <div class="line"></div>
+    <div class="bottom">
+      <div class="place">
+        <div class="pin">📍</div>
+        <div><div class="city">Santo Tirso</div><div class="country">PORTUGAL</div></div>
+      </div>
+      <div class="weather"><span id="weatherIcon" class="weather-icon">☁️</span><span id="temp">--°</span><small id="condition">A CARREGAR</small></div>
+    </div>
+  </main>
+<script>
+  const clock = document.getElementById('clock');
+  function updateClock() {
+    clock.textContent = new Intl.DateTimeFormat('pt-PT', {
+      timeZone: 'Europe/Lisbon', hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour12: false
+    }).format(new Date());
+  }
+  updateClock(); setInterval(updateClock, 1000);
+
+  const descriptions = {
+    0:['☀️','CÉU LIMPO'], 1:['🌤️','MAIORITARIAMENTE LIMPO'],
+    2:['⛅','PARCIALMENTE NUBLADO'], 3:['☁️','NUBLADO'],
+    45:['🌫️','NEVOEIRO'], 48:['🌫️','NEVOEIRO'],
+    51:['🌦️','CHUvisco'], 53:['🌦️','CHUvisco'], 55:['🌧️','CHUVA FRACA'],
+    61:['🌧️','CHUVA'], 63:['🌧️','CHUVA'], 65:['🌧️','CHUVA FORTE'],
+    71:['🌨️','NEVE'], 80:['🌦️','AGUACEIROS'], 81:['🌧️','AGUACEIROS'],
+    82:['⛈️','AGUACEIROS FORTES'], 95:['⛈️','TROVOADA']
+  };
+  async function updateWeather() {
+    try {
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=41.343&longitude=-8.477&current=temperature_2m,weather_code&timezone=Europe%2FLisbon';
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('weather unavailable');
+      const data = await response.json();
+      const current = data.current;
+      const [icon, label] = descriptions[current.weather_code] || ['🌡️','TEMPO ATUAL'];
+      document.getElementById('weatherIcon').textContent = icon;
+      document.getElementById('temp').textContent = `${Math.round(current.temperature_2m)}°`;
+      document.getElementById('condition').textContent = label;
+    } catch (e) {
+      document.getElementById('condition').textContent = 'TEMPO INDISPONÍVEL';
+    }
+  }
+  updateWeather(); setInterval(updateWeather, 600000);
+</script>
+</body>
+</html>
