@@ -1,272 +1,104 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moblin Live Overlay — Albufeira</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Localização - Lisboa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: #ffffff;
+    body {
+      background-color: transparent;
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 16px;
       overflow: hidden;
-      -webkit-font-smoothing: antialiased;
     }
 
-    .widget {
+    .location-badge {
       display: inline-flex;
-      flex-direction: column;
+      align-items: center;
       gap: 10px;
-      padding: 14px 18px;
-      min-width: 280px;
-      background: rgba(12, 16, 26, 0.80);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: rgba(15, 15, 18, 0.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 16px;
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+      border-radius: 50px;
+      padding: 8px 18px 8px 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
     }
 
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .live-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(239, 68, 68, 0.18);
-      border: 1px solid rgba(239, 68, 68, 0.38);
-      color: #fca5a5;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      padding: 3px 9px;
-      border-radius: 999px;
-      text-transform: uppercase;
-    }
-
-    .live-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background-color: #ef4444;
-      box-shadow: 0 0 8px #ef4444;
-      animation: pulse 1.8s infinite ease-in-out;
-    }
-
-    .clock {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 18px;
-      font-weight: 600;
-      color: #ffffff;
-      letter-spacing: 0.03em;
-    }
-
-    .divider {
-      height: 1px;
-      width: 100%;
-      background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.05) 0%,
-        rgba(255, 255, 255, 0.18) 50%,
-        rgba(255, 255, 255, 0.05) 100%
-      );
-    }
-
-    .bottom-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .location {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .pin-icon {
+    .pin-wrapper {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
-      background: rgba(56, 189, 248, 0.16);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: #38bdf8;
-      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
     }
 
-    .city-info {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.15;
+    .pulse-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: rgba(83, 252, 24, 0.4);
+      animation: pulse 2s infinite ease-out;
     }
 
-    .city-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: #ffffff;
+    .pin-icon {
+      width: 16px;
+      height: 16px;
+      fill: #53fc18;
+      z-index: 1;
     }
 
-    .country-name {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      color: rgba(255, 255, 255, 0.55);
-      margin-top: 2px;
-      text-transform: uppercase;
-    }
-
-    .weather {
+    .location-text {
       display: flex;
       align-items: center;
-      gap: 8px;
-      text-align: right;
+      gap: 6px;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     }
 
-    .weather-icon {
-      font-size: 21px;
+    .country {
+      color: #b3b3b3;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .flag {
+      font-size: 16px;
       line-height: 1;
     }
 
-    .weather-details {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      line-height: 1.15;
-    }
-
-    .temp {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 16px;
-      font-weight: 600;
-      color: #ffffff;
-    }
-
-    .condition {
-      font-size: 9.5px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.58);
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
-
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.35; transform: scale(0.85); }
+      0% {
+        transform: scale(0.7);
+        opacity: 0.9;
+      }
+      100% {
+        transform: scale(1.9);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
-  <main class="widget">
-    <div class="top-bar">
-      <div class="live-badge">
-        <span class="live-dot"></span>
-        LIVE
-      </div>
-      <div class="clock" id="clock">--:--:--</div>
-    </div>
 
-    <div class="divider"></div>
-
-    <div class="bottom-bar">
-      <div class="location">
-        <div class="pin-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
-        </div>
-        <div class="city-info">
-          <span class="city-name">Albufeira</span>
-          <span class="country-name">Portugal</span>
-        </div>
-      </div>
-
-      <div class="weather">
-        <span class="weather-icon" id="weather-icon">☀️</span>
-        <div class="weather-details">
-          <span class="temp" id="temp">--°</span>
-          <span class="condition" id="condition">A CARREGAR</span>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <script>
-    function updateClock() {
-      const now = new Date();
-      document.getElementById('clock').textContent = now.toLocaleTimeString('pt-PT', {
-        timeZone: 'Europe/Lisbon',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    const weatherMap = {
-      0: { icon: '☀️', label: 'CÉU LIMPO' },
-      1: { icon: '🌤️', label: 'POUCO NUBLADO' },
-      2: { icon: '⛅', label: 'PARC. NUBLADO' },
-      3: { icon: '☁️', label: 'NUBLADO' },
-      45: { icon: '🌫️', label: 'NEVOEIRO' },
-      48: { icon: '🌫️', label: 'NEVOEIRO' },
-      51: { icon: '🌦️', label: 'CHUVISCO' },
-      53: { icon: '🌦️', label: 'CHUVISCO' },
-      55: { icon: '🌧️', label: 'CHUVISCO' },
-      61: { icon: '🌧️', label: 'CHUVA FRACA' },
-      63: { icon: '🌧️', label: 'CHUVA' },
-      65: { icon: '⛈️', label: 'CHUVA FORTE' },
-      80: { icon: '🌦️', label: 'AGUACEIROS' },
-      81: { icon: '🌧️', label: 'AGUACEIROS' },
-      82: { icon: '⛈️', label: 'AGUACEIROS' },
-      95: { icon: '⛈️', label: 'TROVOADA' }
-    };
-
-    async function updateWeather() {
-      try {
-        const res = await fetch(
-          'https://api.open-meteo.com/v1/forecast?latitude=37.0891&longitude=-8.2479&current=temperature_2m,weather_code,is_day&timezone=Europe%2FLisbon'
-        );
-        const data = await res.json();
-        const temp = Math.round(data.current.temperature_2m);
-        const code = data.current.weather_code;
-        const isDay = data.current.is_day === 1;
-
-        let weatherInfo = weatherMap[code] || { icon: '🌡️', label: 'ESTÁVEL' };
-        let icon = (!isDay && (code === 0 || code === 1)) ? '🌙' : weatherInfo.icon;
-
-        document.getElementById('temp').textContent = `${temp}°`;
-        document.getElementById('condition').textContent = weatherInfo.label;
-        document.getElementById('weather-icon').textContent = icon;
-      } catch (e) {
-        document.getElementById('condition').textContent = 'ALGARVE';
-      }
-    }
-
-    updateWeather();
-    setInterval(updateWeather, 15 * 60 * 1000);
-  </script>
-</body>
-</html>
+  <div class="location-badge">
+    <div class="pin-wrapper">
+      <div class="pulse-ring"></div>
+      <svg class="pin-icon" viewBox="0 0 24 24">
+        <path d="M12 2C8.1
