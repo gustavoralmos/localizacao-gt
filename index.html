@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Localização - Lisboa</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -14,7 +13,7 @@
 
     body {
       background-color: transparent;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -25,14 +24,15 @@
     .location-badge {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      background: rgba(15, 15, 18, 0.78);
+      gap: 12px;
+      background: rgba(15, 15, 18, 0.82);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 10px 18px;
       border-radius: 50px;
-      padding: 8px 18px 8px 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      color: #ffffff;
     }
 
     .pin-wrapper {
@@ -40,65 +40,98 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 22px;
-      height: 22px;
+      width: 14px;
+      height: 14px;
     }
 
-    .pulse-ring {
-      position: absolute;
-      width: 100%;
-      height: 100%;
+    .pin-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #53fc18;
       border-radius: 50%;
-      background-color: rgba(83, 252, 24, 0.4);
-      animation: pulse 2s infinite ease-out;
+      z-index: 2;
+      box-shadow: 0 0 8px #53fc18;
     }
 
-    .pin-icon {
-      width: 16px;
-      height: 16px;
-      fill: #53fc18;
+    .pin-pulse {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #53fc18;
+      border-radius: 50%;
+      animation: pulse 2s infinite ease-out;
       z-index: 1;
     }
 
-    .location-text {
+    .info-group {
       display: flex;
       align-items: center;
-      gap: 6px;
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     }
 
-    .country {
-      color: #b3b3b3;
-      font-weight: 600;
-      font-size: 13px;
+    .divider {
+      color: rgba(255, 255, 255, 0.35);
+      font-weight: 400;
     }
 
-    .flag {
-      font-size: 16px;
-      line-height: 1;
+    .meta {
+      color: #e4e4e7;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
     }
 
     @keyframes pulse {
-      0% {
-        transform: scale(0.7);
-        opacity: 0.9;
-      }
-      100% {
-        transform: scale(1.9);
-        opacity: 0;
-      }
+      0% { transform: scale(1); opacity: 0.85; }
+      100% { transform: scale(2.8); opacity: 0; }
     }
   </style>
 </head>
 <body>
-
   <div class="location-badge">
     <div class="pin-wrapper">
-      <div class="pulse-ring"></div>
-      <svg class="pin-icon" viewBox="0 0 24 24">
-        <path d="M12 2C8.1
+      <div class="pin-pulse"></div>
+      <div class="pin-dot"></div>
+    </div>
+    <div class="info-group">
+      <span>Lisboa, PT</span>
+      <span class="divider">•</span>
+      <span id="clock" class="meta">--:--</span>
+      <span class="divider">•</span>
+      <span id="temp" class="meta">--°C</span>
+    </div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('pt-PT', {
+        timeZone: 'Europe/Lisbon',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      document.getElementById('clock').textContent = timeStr;
+    }
+
+    async function updateWeather() {
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=38.7223&longitude=-9.1393&current=temperature_2m');
+        const data = await res.json();
+        const temp = Math.round(data.current.temperature_2m);
+        document.getElementById('temp').textContent = `${temp}°C`;
+      } catch (e) {
+        console.error('Erro ao buscar clima:', e);
+      }
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    updateWeather();
+    setInterval(updateWeather, 600000);
+  </script>
+</body>
+</html>
