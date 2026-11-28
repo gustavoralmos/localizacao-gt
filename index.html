@@ -1,137 +1,286 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Localização - Lisboa</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overlay Albufeira - Live</title>
+  <!-- Importação de fontes para aproximar ao máximo o estilo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
-    body {
-      background-color: transparent;
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 16px;
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      color: #ffffff;
       overflow: hidden;
     }
 
-    .location-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(15, 15, 18, 0.82);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      padding: 10px 18px;
-      border-radius: 50px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
-      color: #ffffff;
+    .wrapper {
+      padding: 20px;
     }
 
-    .pin-wrapper {
-      position: relative;
+    /* Card principal com o design do print */
+    .widget {
+      display: inline-block;
+      width: 320px;
+      padding: 12px 14px 10px 14px;
+      border-radius: 12px;
+      background: rgba(18, 18, 18, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Linha do Topo: Tag LIVE e o Relógio */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .live-tag {
       display: flex;
       align-items: center;
-      justify-content: center;
-      width: 14px;
-      height: 14px;
+      gap: 4px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #ef4444;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    .pin-dot {
-      width: 10px;
-      height: 10px;
-      background-color: #53fc18;
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #ef4444;
       border-radius: 50%;
-      z-index: 2;
-      box-shadow: 0 0 8px #53fc18;
-    }
-
-    .pin-pulse {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background-color: #53fc18;
-      border-radius: 50%;
-      animation: pulse 2s infinite ease-out;
-      z-index: 1;
-    }
-
-    .info-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-    }
-
-    .divider {
-      color: rgba(255, 255, 255, 0.35);
-      font-weight: 400;
-    }
-
-    .meta {
-      color: #e4e4e7;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
+      animation: pulse 1.5s infinite;
     }
 
     @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.85; }
-      100% { transform: scale(2.8); opacity: 0; }
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+
+    .clock {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.5px;
+    }
+
+    /* Corpo: Divisão em Duas Colunas */
+    .content-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Coluna Esquerda: Localização */
+    .location-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Ícone azul de pin/mapa */
+    .map-pin {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+    }
+
+    .map-pin svg {
+      width: 16px;
+      height: 16px;
+      fill: #3b82f6;
+    }
+
+    .loc-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .city {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .country {
+      font-size: 9px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Coluna Direita: Clima */
+    .weather-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .weather-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .weather-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .temp-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .weather-desc {
+      font-size: 9px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
     }
   </style>
 </head>
 <body>
-  <div class="location-badge">
-    <div class="pin-wrapper">
-      <div class="pin-pulse"></div>
-      <div class="pin-dot"></div>
-    </div>
-    <div class="info-group">
-      <span>Lisboa, PT</span>
-      <span class="divider">•</span>
-      <span id="clock" class="meta">--:--</span>
-      <span class="divider">•</span>
-      <span id="temp" class="meta">--°C</span>
+
+  <div class="wrapper">
+    <div class="widget">
+      
+      <!-- Topo: tag LIVE e relógio digital -->
+      <div class="top-bar">
+        <div class="live-tag">
+          <span class="live-dot"></span>
+          • LIVE
+        </div>
+        <div class="clock" id="clock">17:12:54</div>
+      </div>
+
+      <!-- Corpo: Local + Clima -->
+      <div class="content-grid">
+        
+        <!-- Esquerda: Albuquerque pin -->
+        <div class="location-box">
+          <div class="map-pin">
+            <!-- SVG de localização adaptado -->
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+          </div>
+          <div class="loc-text">
+            <span class="city">Albufeira</span>
+            <span class="country">Portugal</span>
+          </div>
+        </div>
+
+        <!-- Direita: Clima atual -->
+        <div class="weather-box">
+          <span class="weather-icon" id="weather-icon">⛅</span>
+          <div class="weather-info">
+            <span class="temp-value" id="temp">15°</span>
+            <span class="weather-desc" id="desc">PARC. NUBLADO</span>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 
   <script>
+    // Configurações do fuso horário e localização de Albufeira
+    const LAT = 37.0882;
+    const LON = -8.2503;
+    const TIMEZONE = "Europe/Lisbon";
+
+    // Tradução e formatação correspondente às respostas de código
+    const WEATHER_MAP = {
+      0:  { text: "Céu limpo", icon: "☀️" },
+      1:  { text: "Pouco nublado", icon: "🌤️" },
+      2:  { text: "Parc. Nublado", icon: "⛅" },
+      3:  { text: "Nublado", icon: "☁️" },
+      45: { text: "Nevoeiro", icon: "🌫️" },
+      48: { text: "Nevoeiro gelado", icon: "🌫️" },
+      51: { text: "Garoa fraca", icon: "🌦️" },
+      53: { text: "Garoa moderada", icon: "🌦️" },
+      55: { text: "Garoa forte", icon: "🌦️" },
+      61: { text: "Chuva fraca", icon: "🌧️" },
+      63: { text: "Chuva moderada", icon: "🌧️" },
+      65: { text: "Chuva forte", icon: "🌧️" },
+      80: { text: "Pancadas fracas", icon: "🌦️" },
+      81: { text: "Pancadas moderadas", icon: "🌦️" },
+      82: { text: "Pancadas fortes", icon: "⛈️" },
+      95: { text: "Trovoada", icon: "⛈️" }
+    };
+
+    // Relógio que roda com segundos
     function updateClock() {
       const now = new Date();
-      const timeStr = now.toLocaleTimeString('pt-PT', {
-        timeZone: 'Europe/Lisbon',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-      document.getElementById('clock').textContent = timeStr;
+      const formatted = new Intl.DateTimeFormat("pt-PT", {
+        timeZone: TIMEZONE,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).format(now);
+      document.getElementById("clock").textContent = formatted;
     }
 
+    // Busca clima ao vivo de 10 em 10 minutos
     async function updateWeather() {
       try {
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=38.7223&longitude=-9.1393&current=temperature_2m');
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,weather_code&timezone=${encodeURIComponent(TIMEZONE)}`;
+        const res = await fetch(url);
         const data = await res.json();
+
         const temp = Math.round(data.current.temperature_2m);
-        document.getElementById('temp').textContent = `${temp}°C`;
-      } catch (e) {
-        console.error('Erro ao buscar clima:', e);
+        const code = data.current.weather_code;
+        const info = WEATHER_MAP[code] || { text: "Desconhecido", icon: "🌡️" };
+
+        document.getElementById("temp").textContent = `${temp}°`;
+        document.getElementById("desc").textContent = info.text.toUpperCase();
+        document.getElementById("weather-icon").textContent = info.icon;
+      } catch (err) {
+        document.getElementById("desc").textContent = "Erro";
+        document.getElementById("weather-icon").textContent = "📡";
       }
     }
 
     updateClock();
-    setInterval(updateClock, 1000);
-
     updateWeather();
-    setInterval(updateWeather, 600000);
+    setInterval(updateClock, 1000);
+    setInterval(updateWeather, 10 * 60 * 1000); // Atualização periódica do clima
   </script>
 </body>
 </html>
